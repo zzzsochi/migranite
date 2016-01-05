@@ -4,7 +4,7 @@ from collections import namedtuple
 
 MigrationResult = namedtuple(
     'MigrationResult',
-    ('ts', 'num', 'name', 'source', 'md5', 'result'))
+    ('ts', 'num', 'name', 'short', 'long', 'source', 'md5', 'result'))
 
 
 class DBInterface(metaclass=abc.ABCMeta):
@@ -14,7 +14,7 @@ class DBInterface(metaclass=abc.ABCMeta):
 
     @abc.abstractproperty
     def results(self):
-        """ List of all results
+        """ List of all results (MigrationResult)
         """
 
     @abc.abstractmethod
