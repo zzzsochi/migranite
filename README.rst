@@ -105,3 +105,27 @@ Other settings are backend-specified.
 :port: Default ``27017``.
 :name: Name of database. Required.
 :collection: Name of collection. Default ``migrations``.
+
+----------
+Production
+----------
+
+All paths in config and command arguments can be relative from python packages. Use ``:``, Luke!
+
+Example:
+
+.. code-block :: ini
+
+    [migrations]
+    path = my_project:migrations
+
+    [templates]
+    path = migrations_templates
+    default = default.py
+
+    [database]
+    backend = json
+    path = ~/migrations.json
+
+Will look for migrations in the directory ``migrations`` in python package ``my_project``.
+Use this feature on production is good practice.
