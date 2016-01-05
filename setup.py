@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='migranite',
     description='Migranite -- manage migtations tool',
-    version='0.3.1',
+    version='0.4.0',
     classifiers=[
         "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX",
