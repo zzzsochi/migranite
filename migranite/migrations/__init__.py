@@ -1,5 +1,6 @@
 import os
 
+from .base import MigrationInterface  # noqa
 from .py import MigrationPy
 
 

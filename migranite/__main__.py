@@ -33,7 +33,7 @@ def run_init(parser, args):
 
 @_require_config
 def run_list(parser, args):
-    migranite.run.print_list(args.config, args.long)
+    migranite.run.print_list(args.config, args.long, args.all)
 
 
 @_require_config
@@ -112,6 +112,8 @@ def main():
 
     subparsers = parser.add_subparsers()
 
+    # init
+
     parser_init = subparsers.add_parser('init', help="add migranite to project")
     parser_init.set_defaults(func=run_init)
 
@@ -127,12 +129,20 @@ def main():
                              metavar='DIR',
                              help="templates directory")
 
+    # list
+
     parser_list = subparsers.add_parser('list', help="show all available migrations")
     parser_list.set_defaults(func=run_list)
 
     parser_list.add_argument('-l', '--long',
                              action='store_true',
                              help="show long descriprions")
+
+    parser_list.add_argument('-a', '--all',
+                             action='store_true',
+                             help="show removed migrations migrations too")
+
+    # create
 
     parser_create = subparsers.add_parser('create', help="create new migtation")
     parser_create.set_defaults(func=run_create)
@@ -147,6 +157,8 @@ def main():
                                metavar='NAME',
                                help="template for new migration")
 
+    # run
+
     parser_run = subparsers.add_parser('run', help="run migrations")
     parser_run.set_defaults(func=run)
 
@@ -158,11 +170,17 @@ def main():
                             action='store_true',
                             help="force run specified migrations")
 
+    # help
+
     parser_help = subparsers.add_parser('help', help="show this help message and exit")
     parser_help.set_defaults(func=run_help)
 
+    # version
+
     parser_version = subparsers.add_parser('version', help="show version and exit")
     parser_version.set_defaults(func=run_version)
+
+    # --
 
     args = parser.parse_args()
     getattr(args, 'func', run_help)(parser, args)

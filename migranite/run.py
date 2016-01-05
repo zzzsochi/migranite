@@ -33,34 +33,45 @@ def init(config, migrations, templates):
               file=sys.stderr)
 
 
-def print_list(config, long=False):
+def print_list(config, long=False, all=False):
     """ Print list of available migrations
 
     :config: config dict
     """
     db = get_db(config)
 
-    for migration in migrations.get_files(config):
-        migration = migrations.get(config, migration)
-
-        if db.success(migration):
-            status = 'PSS'
+    def print_item(item, status, long=False):
+        if status == 'PSS':
             color = Fore.GREEN
-        elif db.find(migration):
-            status = 'ERR'
+        elif status == 'ERR':
             color = Fore.RED
         else:
-            status = '   '
             color = ''
 
-        print("[{S}{}{R}] {!s}".format(
-            status, migration, S=color, R=Style.RESET_ALL))
+        print("[{C}{status}{R}] {item.num}-{item.name}: {item.short}".format(
+            status=status, item=item, C=color, R=Style.RESET_ALL))
 
-        if long:
-            if migration.long:
-                print("\n{}\n".format(migration.long))
-            else:
-                print()
+        if long and item.long:
+            print("\n{}\n".format(item.long))
+
+    if all:
+        for result in db.results:
+            print_item(result, 'PSS' if result.result else 'ERR', long=long)
+
+    for item in migrations.get_files(config):
+        item = migrations.get(config, item)
+
+        if db.success(item):
+            status = 'PSS'
+        elif db.find(item):
+            status = 'ERR'
+        else:
+            status = '   '
+
+        if all and status.strip():
+            continue
+
+        print_item(item, status, long=long)
 
 
 def create(config, template, name):
