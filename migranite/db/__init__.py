@@ -2,12 +2,13 @@ from .json import JSON
 from .mongo import Mongo
 
 
-def get(config):
-    """ Get database object
+def get(settings):
+    """ Get database object.
     """
-    if config['database']['backend'] == 'json':
-        return JSON(config)
-    elif config['database']['backend'] == 'mongo':
-        return Mongo(config)
+    if settings['database']['backend'] == 'json':
+        return JSON(settings)
+    elif settings['database']['backend'] == 'mongo':
+        return Mongo(settings)
     else:
-        raise RuntimeError("Bad database backend: {}".format(config['database']))
+        raise RuntimeError("Bad database backend: {!r}"
+                           "".format(settings['database']))

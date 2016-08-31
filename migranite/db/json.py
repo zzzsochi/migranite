@@ -11,13 +11,13 @@ from .base import DBSimpleBase, MigrationResult
 class JSON(DBSimpleBase):
     _results = None
 
-    def __init__(self, config):
-        super().__init__(config)
-        if 'path' not in config['database']:
+    def __init__(self, settings):
+        super().__init__(settings)
+        if 'path' not in settings['database']:
             print("Path to json file not set in settings.", file=sys.stderr)
             sys.exit(1)
 
-        self.path = config['database']['path']
+        self.path = settings['database']['path']
 
     @property
     def results(self):

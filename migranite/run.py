@@ -7,15 +7,15 @@ from . import migrations
 from .db import get as get_db
 
 
-def init(config, migrations, templates):
+def init(settings, migrations, templates):
     from . import init_data
 
-    config_path = config['file']
-    config_dir = os.path.dirname(config_path)
-    os.makedirs(config_dir, exist_ok=True)
+    settings_path = settings['file']
+    settings_dir = os.path.dirname(settings_path)
+    os.makedirs(settings_dir, exist_ok=True)
 
-    with open(config_path, 'w') as f:
-        data = init_data.CONFIG.safe_substitute(
+    with open(settings_path, 'w') as f:
+        data = init_data.SETTINGS.safe_substitute(
             migranite_path=migrations,
             templates_path=templates,
         )
@@ -33,12 +33,12 @@ def init(config, migrations, templates):
               file=sys.stderr)
 
 
-def print_list(config, long=False, all=False):
-    """ Print list of available migrations
+def print_list(settings, long=False, all=False):
+    """ Print list of available migrations.
 
-    :config: config dict
+    :settings: settings dict
     """
-    db = get_db(config)
+    db = get_db(settings)
 
     def print_item(item, status, long=False):
         if status == 'PSS':
@@ -58,8 +58,8 @@ def print_list(config, long=False, all=False):
         for result in db.results:
             print_item(result, 'PSS' if result.result else 'ERR', long=long)
 
-    for item in migrations.get_files(config):
-        item = migrations.get(config, item)
+    for item in migrations.get_files(settings):
+        item = migrations.get(settings, item)
 
         if db.success(item):
             status = 'PSS'
@@ -74,8 +74,8 @@ def print_list(config, long=False, all=False):
         print_item(item, status, long=long)
 
 
-def create(config, template, name):
-    """ Create new migration
+def create(settings, template, name):
+    """ Create new migration.
 
     :temlate: template name
     :name: migration name
@@ -83,28 +83,28 @@ def create(config, template, name):
     with open(template) as f:
         data = f.read()
 
-    digits = config.get('digits', 3)
+    digits = settings.get('digits', 3)
     _, ext = os.path.splitext(template)
 
-    num = max([m.num for m in migrations.get_all(config)] + [0]) + 1
+    num = max([m.num for m in migrations.get_all(settings)] + [0]) + 1
 
     name = '{}-{}{}'.format(str(num).zfill(digits), name, ext)
 
-    path = os.path.join(config['migrations']['path'], name)
+    path = os.path.join(settings['migrations']['path'], name)
 
     with open(path, 'w') as f:
         f.write(data)
 
 
-def migrate(config, migrations_names, force=False):
-    """ Run specified migrations
+def migrate(settings, migrations_names, force=False):
+    """ Run specified migrations.
 
-    :config: config dict
+    :settings: settings dict
     :migrations_names: list of migrations names
     :force: run if migration already worked (default False)
     """
-    db = get_db(config)
-    objects = migrations.get_all(config)
+    db = get_db(settings)
+    objects = migrations.get_all(settings)
     found = []
 
     for mn in migrations_names:
@@ -141,13 +141,13 @@ def migrate(config, migrations_names, force=False):
         _run_migration(db, migration)
 
 
-def migrate_all(config):
-    """ Run all migrations
+def migrate_all(settings):
+    """ Run all migrations.
 
-    :config: config dict
+    :settings: settings dict
     """
-    db = get_db(config)
-    for migration in migrations.get_all(config):
+    db = get_db(settings)
+    for migration in migrations.get_all(settings):
         if not db.success(migration):
             _run_migration(db, migration)
         else:

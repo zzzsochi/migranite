@@ -5,7 +5,7 @@ def parse_path(path):
     if ':' in path:
         package_name, name = path.split(':', 1)
         if not name:
-            raise ValueError("Empty config file name")
+            raise ValueError("Empty settings file name")
 
         try:
             package = __import__(package_name, fromlist=package_name.split('.'))

@@ -1,6 +1,6 @@
 from string import Template
 
-CONFIG = Template("""\
+SETTINGS = Template("""\
 [migrations]
 path = $migranite_path
 ; digits = 3

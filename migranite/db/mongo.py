@@ -14,20 +14,20 @@ from .base import DBInterface, MigrationResult
 class Mongo(DBInterface):
     _collection = None
 
-    def __init__(self, config):
+    def __init__(self, settings):
         if not PYMONGO:
             print("pymongo not installed.", file=sys.stderr)
             sys.exit(1)
 
-        if not config['database'].get('name'):
-            print("Database name not set in config.", file=sys.stderr)
+        if not settings['database'].get('name'):
+            print("Database name not set in settings.", file=sys.stderr)
             sys.exit(1)
 
-        self._config = config
-        self.host = config['database'].get('host', 'localhost')
-        self.port = int(config['database'].get('port', 27017))
-        self.db_name = config['database']['name']
-        self.collection_name = config['database'].get('collection', 'migrations')
+        self._settings = settings
+        self.host = settings['database'].get('host', 'localhost')
+        self.port = int(settings['database'].get('port', 27017))
+        self.db_name = settings['database']['name']
+        self.collection_name = settings['database'].get('collection', 'migrations')
 
     @property
     def collection(self):

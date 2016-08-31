@@ -9,35 +9,35 @@ MigrationResult = namedtuple(
 
 class DBInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def __init__(self, config):
+    def __init__(self, settings):
         pass
 
     @abc.abstractproperty
     def results(self):
-        """ List of all results (MigrationResult)
+        """ List of all results (MigrationResult).
         """
 
     @abc.abstractmethod
     def add(self, migration, result):
-        """ Add migration result to database
+        """ Add migration result to database.
         """
 
     @abc.abstractmethod
     def find(self, migration):
-        """ Fild all results for migration
+        """ Fild all results for migration.
 
         Return list of results (MigrationResult).
         """
 
     @abc.abstractmethod
     def success(self, migration):
-        """ Return True if last migration run is success
+        """ Return True if last migration run is success.
         """
 
 
 class DBSimpleBase(DBInterface):
-    def __init__(self, config):
-        self._config = config
+    def __init__(self, settings):
+        self._settings = settings
 
     def find(self, migration):
         return [r for r in self.results

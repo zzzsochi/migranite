@@ -4,14 +4,14 @@ from .base import MigrationInterface  # noqa
 from .py import MigrationPy
 
 
-def get_all(config):
-    """ Get all available migtarion
+def get_all(settings):
+    """ Get all available migtarion.
     """
-    return [get(config, fn) for fn in get_files(config)]
+    return [get(settings, fn) for fn in get_files(settings)]
 
 
-def get_files(config):
-    path = config['migrations']['path']
+def get_files(settings):
+    path = settings['migrations']['path']
     if not os.path.isdir(path):
         print("{} not exists".format(path))
         return []
@@ -25,19 +25,19 @@ def get_files(config):
         yield file_name
 
 
-def get(config, file_name):
-    """ Get migration object for file
+def get(settings, file_name):
+    """ Get migration object for file.
     """
     name, ext = os.path.splitext(file_name)
 
     if ext == '.py':
-        return MigrationPy(config, file_name)
+        return MigrationPy(settings, file_name)
     else:
-        raise ValueError("unknown migration type {!r}".format(file_name))
+        raise ValueError("Unknown migration type {!r}".format(file_name))
 
 
 def find(migrations, num=None, name=None):
-    """ Find migtations for num and name
+    """ Find migtations for num and name.
     """
     result = []
 

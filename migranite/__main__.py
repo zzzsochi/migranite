@@ -8,12 +8,12 @@ import migranite.run
 import migranite.utils
 
 
-def _require_config(func):
+def _require_settings(func):
     def wrapper(parser, args):
-        if 'migrations' in args.config:
+        if 'migrations' in args.settings:
             func(parser, args)
         else:
-            print("Config file {!r} not found".format(args.config['file']),
+            print("Settings file {!r} not found".format(args.settings['file']),
                   file=sys.stderr)
             sys.exit(1)
 
@@ -21,46 +21,46 @@ def _require_config(func):
 
 
 def run_init(parser, args):
-    config_path = args.config['file']
+    settings_path = args.settings['file']
 
-    if os.path.exists(config_path):
-        print("Config file {!r} is already exists".format(config_path),
+    if os.path.exists(settings_path):
+        print("Settings file {!r} is already exists".format(settings_path),
               file=sys.stderr)
         sys.exit(1)
 
-    migranite.run.init(args.config, args.migrations, args.templates)
+    migranite.run.init(args.settings, args.migrations, args.templates)
 
 
-@_require_config
+@_require_settings
 def run_list(parser, args):
-    migranite.run.print_list(args.config, args.long, args.all)
+    migranite.run.print_list(args.settings, args.long, args.all)
 
 
-@_require_config
+@_require_settings
 def run_create(parser, args):
     if not args.template:
-        if 'default' not in args.config['templates']:
+        if 'default' not in args.settings['templates']:
             print("Default template not set.", file=sys.stderr)
             sys.exit(1)
 
-        template = args.config['templates']['default']
+        template = args.settings['templates']['default']
 
-    template = os.path.join(args.config['templates']['path'], template)
+    template = os.path.join(args.settings['templates']['path'], template)
 
     if not os.path.isfile(template):
         print("{!r} is not exist".format(template), file=sys.stderr)
         sys.exit(1)
 
-    migranite.run.create(args.config, template, args.name[0])
+    migranite.run.create(args.settings, template, args.name[0])
 
 
-@_require_config
+@_require_settings
 def run(parser, args):
     if args.migrations:
         migranite.run.migrate(
-            args.config, args.migrations, args.force)
+            args.settings, args.migrations, args.force)
     else:
-        migranite.run.migrate_all(args.config)
+        migranite.run.migrate_all(args.settings)
 
 
 def run_help(parser, args):
@@ -71,7 +71,7 @@ def run_version(parser, args):
     print(__version__)
 
 
-def _parse_config(path):
+def _parse_settings(path):
     path = migranite.utils.parse_path(path)
 
     try:
@@ -80,35 +80,35 @@ def _parse_config(path):
     except FileNotFoundError:
         return {'file': path}
 
-    config_reader = configparser.ConfigParser()
-    config_reader.read_string(raw)
+    settings_reader = configparser.ConfigParser()
+    settings_reader.read_string(raw)
 
     for section in ['migrations', 'templates', 'database']:
-        if section not in config_reader:
-            print("Config has no {!r} section".format(section), file=sys.stderr)
+        if section not in settings_reader:
+            print("Settings has no {!r} section".format(section), file=sys.stderr)
             sys.exit(1)
 
-    config = {
+    settings = {
         'file': path,
-        'migrations': dict(config_reader.items('migrations')),
-        'templates': dict(config_reader.items('templates')),
-        'database': dict(config_reader.items('database')),
+        'migrations': dict(settings_reader.items('migrations')),
+        'templates': dict(settings_reader.items('templates')),
+        'database': dict(settings_reader.items('database')),
     }
 
-    config['migrations']['path'] = migranite.utils.parse_path(config['migrations']['path'])
-    config['migrations']['digits'] = int(config['migrations'].get('digits', 3))
-    config['templates']['path'] = migranite.utils.parse_path(config['templates']['path'])
+    settings['migrations']['path'] = migranite.utils.parse_path(settings['migrations']['path'])
+    settings['migrations']['digits'] = int(settings['migrations'].get('digits', 3))
+    settings['templates']['path'] = migranite.utils.parse_path(settings['templates']['path'])
 
-    return config
+    return settings
 
 
 def main():
     parser = argparse.ArgumentParser(add_help=False)
 
-    parser.add_argument('--config',
-                        type=_parse_config,
+    parser.add_argument('--settings',
+                        type=_parse_settings,
                         default='.migranite',
-                        help="config file (default '.migranite')")
+                        help="settings file (default '.migranite')")
 
     subparsers = parser.add_subparsers()
 

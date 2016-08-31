@@ -5,57 +5,57 @@ import hashlib
 
 class MigrationInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def __init__(self, config, file_name, verbose=False):
+    def __init__(self, settings, file_name, verbose=False):
         pass
 
     @abc.abstractproperty
-    def config(self):
-        """ Config dict
+    def settings(self):
+        """ Settings dict.
         """
 
     @abc.abstractproperty
     def file_name(self):
-        """ Migration file name
+        """ Migration file name.
         """
 
     @abc.abstractproperty
     def verbose(self):
-        """ Verbose flag
+        """ Verbose flag.
         """
 
     @abc.abstractproperty
     def num(self):
-        """ Number representation of migration
+        """ Number representation of migration.
         """
 
     @abc.abstractproperty
     def name(self):
-        """ Name of migration
+        """ Name of migration.
         """
 
     @abc.abstractproperty
     def source(self):
-        """ Migration source code
+        """ Migration source code.
         """
 
     @abc.abstractproperty
     def md5(self):
-        """ Migration source code md5
+        """ Migration source code md5.
         """
 
     @abc.abstractproperty
     def short(self):
-        """ One-line description
+        """ One-line description.
         """
 
     @abc.abstractproperty
     def long(self):
-        """ Multiline long description
+        """ Multiline long description.
         """
 
     @abc.abstractmethod
     def run(self):
-        """ Migration logic
+        """ Migration logic.
         """
 
     @abc.abstractmethod
@@ -70,8 +70,8 @@ class MigrationInterface(metaclass=abc.ABCMeta):
 class MigrationBase(MigrationInterface):
     _source = None
 
-    def __init__(self, config, file_name, verbose=False):
-        self._config = config
+    def __init__(self, settings, file_name, verbose=False):
+        self._settings = settings
         self._file_name = file_name
         self._verbose = verbose
 
@@ -81,8 +81,8 @@ class MigrationBase(MigrationInterface):
         self._name = name
 
     @property
-    def config(self):
-        return self._config
+    def settings(self):
+        return self._settings
 
     @property
     def file_name(self):
@@ -103,7 +103,7 @@ class MigrationBase(MigrationInterface):
     @property
     def source(self):
         if self._source is None:
-            f = open(os.path.join(self.config['migrations']['path'], self.file_name), 'r')
+            f = open(os.path.join(self.settings['migrations']['path'], self.file_name), 'r')
             with f:
                 self._source = f.read()
         return self._source

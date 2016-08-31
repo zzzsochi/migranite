@@ -18,6 +18,7 @@ If you want to use MongoDB as database for migrations:
 
     pip install 'migranite[mongo]'
 
+
 ------------
 How to start
 ------------
@@ -28,7 +29,7 @@ To initialize the migranite in your project run:
 
     migranite init --migrations migrations_dir --templates templates_dir
 
-This command creates the config file (``.migranite``) and two directories (``migrations_dir`` and ``templates_dir``).
+This command creates the settings file (``.migranite``) and two directories (``migrations_dir`` and ``templates_dir``).
 
 Create the first migration:
 
@@ -106,6 +107,7 @@ Other settings are backend-specified.
 :name: Name of database. Required.
 :collection: Name of collection. Default ``migrations``.
 
+
 ----------
 Production
 ----------
@@ -129,3 +131,13 @@ Example:
 
 Will look for migrations in the directory ``migrations`` in python package ``my_project``.
 Use this feature on production is good practice.
+
+
+-------
+CHANGES
+-------
+
+0.5.0 (2016-09-XX)
+------------------
+
+* Rename ``--config`` argument to ``--settings``;

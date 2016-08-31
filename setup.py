@@ -15,7 +15,7 @@ setup(
     url='https://github.com/zzzsochi/migranite',
     keywords=['migrations', 'development'],
     packages=find_packages(),
-    install_requires=['python-dateutil', 'colorama'],
+    install_requires=['zini', 'python-dateutil', 'colorama'],
     extras_require={'mongo': ['pymongo']},
     entry_points={
         'console_scripts': [
