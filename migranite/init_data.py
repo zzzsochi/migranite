@@ -2,23 +2,23 @@ from string import Template
 
 SETTINGS = Template("""\
 [migrations]
-path = $migranite_path
+path = "$migranite_path"
 ; digits = 3
 
 [templates]
-path = $templates_path
-default = default.py
+path = "$templates_path"
+default = "default.py"
 
 [database]
-backend = json
-path = .migranite_db.json
+backend = "json"
+path = ".migranite_db.json"
 
 ; [database]
-; backend = mongo
-; host = localhost
+; backend = "mongo"
+; host = "localhost"
 ; port = 27017
 ; name =
-; collection = migrations
+; collection = "migrations"
 """)
 
 TEMPLATE_DEFAULT = '''\

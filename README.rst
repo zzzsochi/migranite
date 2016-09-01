@@ -119,15 +119,15 @@ Example:
 .. code-block :: ini
 
     [migrations]
-    path = my_project:migrations
+    path = "my_project:migrations"
 
     [templates]
-    path = migrations_templates
-    default = default.py
+    path = "migrations_templates"
+    default = "default.py"
 
     [database]
-    backend = json
-    path = ~/migrations.json
+    backend = "json"
+    path = "~/migrations.json"
 
 Will look for migrations in the directory ``migrations`` in python package ``my_project``.
 Use this feature on production is good practice.
@@ -141,3 +141,5 @@ CHANGES
 ------------------
 
 * Rename ``--config`` argument to ``--settings``;
+
+* Use `zini <https://github.com/zzzsochi/zini>`_ as settings format;

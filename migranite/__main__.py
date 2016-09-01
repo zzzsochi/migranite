@@ -1,7 +1,8 @@
 import argparse
-import configparser
 import os
 import sys
+
+import zini
 
 from migranite import __version__
 import migranite.run
@@ -80,24 +81,30 @@ def _parse_settings(path):
     except FileNotFoundError:
         return {'file': path}
 
-    settings_reader = configparser.ConfigParser()
-    settings_reader.read_string(raw)
+    settings_reader = zini.Zini()
 
-    for section in ['migrations', 'templates', 'database']:
-        if section not in settings_reader:
-            print("Settings has no {!r} section".format(section), file=sys.stderr)
-            sys.exit(1)
+    settings_reader['migrations']['path'] = str
+    settings_reader['migrations']['digits'] = 3
 
-    settings = {
-        'file': path,
-        'migrations': dict(settings_reader.items('migrations')),
-        'templates': dict(settings_reader.items('templates')),
-        'database': dict(settings_reader.items('database')),
-    }
+    settings_reader['templates']['path'] = str
+    settings_reader['templates']['default'] = "default.py"
 
-    settings['migrations']['path'] = migranite.utils.parse_path(settings['migrations']['path'])
-    settings['migrations']['digits'] = int(settings['migrations'].get('digits', 3))
-    settings['templates']['path'] = migranite.utils.parse_path(settings['templates']['path'])
+    settings_reader['database']['backend'] = str
+
+    settings = settings_reader.parse(raw)
+
+    err = False
+
+    for section, key in [('migrations', 'path'),
+                         ('templates', 'path'),
+                         ('database', 'backend')]:
+        if key not in settings[section]:
+            print(("Section {!r} must include the {!r} key."
+                   "".format(section, key)), file=sys.stderr)
+            err = True
+
+    if err:
+        sys.exit(1)
 
     return settings
 
